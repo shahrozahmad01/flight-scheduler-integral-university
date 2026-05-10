@@ -32,5 +32,5 @@ config_map = {
 }
 
 def get_config():
-    env = os.environ.get('FLASK_ENV', 'development')
+    env = os.environ.get('FLASK_ENV', 'development').lower()
     return config_map.get(env, DevelopmentConfig)
