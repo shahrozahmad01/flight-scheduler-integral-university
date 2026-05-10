@@ -1,6 +1,5 @@
 services:
-  - type: web
-    name: flight-scheduler-backend
+  - name: flight-scheduler-backend
     env: python
     runtime: python-3.11
     plan: free
