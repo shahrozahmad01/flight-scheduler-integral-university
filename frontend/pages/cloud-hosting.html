@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Hosting | Aircraft Network Flight Scheduler</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2 style="margin-bottom:24px;">Aircraft Network</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="flights.html">✈️ Flights</a>
+      <a href="#">👤 Passengers</a>
+      <a href="#">⚠️ Disruptions</a>
+      <a href="#">🔄 Rebooking</a>
+      <a href="#">🔔 Notifications</a>
+      <a class="active" href="cloud-hosting.html">☁️ Cloud Hosting</a>
+    </nav>
+  </div>
+  <main class="main-content">
+    <div class="card">
+      <div class="card-header">Cloud Hosting Guide</div>
+      <p>This page explains how to deploy the Aircraft Network Flight Scheduler to a cloud provider and keep the frontend and backend running together.</p>
+      <h3>Deployment Overview</h3>
+      <ul>
+        <li>The backend is a Flask API in <code>backend/app.py</code>.</li>
+        <li>The frontend is a static site in <code>frontend/</code>.</li>
+        <li>The Flask app is configured to serve the static frontend files from the same app.</li>
+      </ul>
+      <h3>Recommended Cloud Hosts</h3>
+      <ol>
+        <li><strong>Azure App Service</strong> (recommended for Python apps)</li>
+        <li><strong>Render</strong> or similar host that supports Python</li>
+      </ol>
+      <h3>Azure App Service Steps</h3>
+      <ol>
+        <li>Push the repo to GitHub.</li>
+        <li>Create a new Linux Web App with Python 3.14.</li>
+        <li>Set the build command to <code>cd backend && pip install -r requirements.txt</code>.</li>
+        <li>Set the start command to <code>cd backend && python app.py</code>.</li>
+        <li>Open the deployed URL and navigate to <code>/index.html</code>.</li>
+      </ol>
+      <h3>Render / Other Hosts</h3>
+      <ol>
+        <li>Select the repo branch.</li>
+        <li>Use <code>cd backend && pip install -r requirements.txt</code> as build command.</li>
+        <li>Use <code>cd backend && python app.py</code> as start command.</li>
+        <li>Visit <code>/index.html</code> on the deployed domain.</li>
+      </ol>
+      <h3>Important Notes</h3>
+      <ul>
+        <li>The backend now supports serving the frontend static files from <code>frontend/</code>.</li>
+        <li>The app uses <code>requirements.txt</code> for dependency installation.</li>
+        <li>If using Azure, make sure <code>Startup Command</code> points at <code>backend/app.py</code>.</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
