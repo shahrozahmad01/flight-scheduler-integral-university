@@ -26,25 +26,16 @@ The app helps operations teams handle cancellations and delays, prioritize passe
 5. Open `http://localhost:5000/index.html` in your browser
 
 ## Cloud Hosting
-You can deploy this app on a Python cloud host such as Azure App Service or Render.
+The application is designed for a modern cloud architecture:
 
-### Azure App Service
-1. Push the project to a GitHub repository.
-2. Create a Linux Web App with Python 3.14.
-3. In App Service settings, set the Startup Command to:
-   `python backend/app.py`
-4. App Service will install `backend/requirements.txt` and use the Flask app as the API server.
-5. Open `https://<your-app-name>.azurewebsites.net/index.html` to access the frontend.
+- **Frontend**: Hosted on Vercel (static site)
+- **Backend**: Hosted on Render (Flask API)
+- **Database**: Hosted on Supabase (PostgreSQL)
 
-### Render or Similar Python Host
-1. Point the service to the repo branch.
-2. Set the build command to:
-   `cd backend && pip install -r requirements.txt`
-3. Set the start command to:
-   `cd backend && python app.py`
-4. Visit `/index.html` on the deployed domain to load the frontend.
-
-This project now serves the UI from the Flask app static folder and works from the same origin for API calls.
+### Quick Setup:
+1. **Database**: Create Supabase project and get connection string
+2. **Backend**: Deploy to Render with `DATABASE_URL` env var
+3. **Frontend**: Deploy to Vercel, update API base URL to Render backend
 
 📖 **Detailed Hosting Guide**: See [HOSTING_GUIDE.md](HOSTING_GUIDE.md) for comprehensive step-by-step instructions.
 

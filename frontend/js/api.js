@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'https://your-render-backend-url.onrender.com/api';
 
 async function apiFetch(path, options = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
