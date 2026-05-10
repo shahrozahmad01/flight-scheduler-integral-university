@@ -69,8 +69,10 @@ If you want to pre-populate data, you can run the seed script locally against Su
 ### Step 1: Prepare Frontend
 The frontend is static files in `frontend/`. We need to configure it to call the Render backend.
 
-1. Update `frontend/js/api.js` to use the production backend URL.
-2. Change `const BASE_URL = 'http://localhost:5000/api';` to `const BASE_URL = 'https://your-render-backend-url/api';`
+1. After Render deployment, get your backend URL (e.g., `https://flight-scheduler-backend.onrender.com`)
+2. Update `frontend/js/api.js`:
+   - Change `const BASE_URL = 'https://your-render-backend-url.onrender.com/api';` to `const BASE_URL = 'https://your-actual-render-url.onrender.com/api';`
+3. Commit and push the change to trigger Vercel redeployment.
 
 ### Step 2: Deploy to Vercel
 1. Go to [Vercel Dashboard](https://vercel.com).
