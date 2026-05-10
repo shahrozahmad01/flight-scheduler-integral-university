@@ -32,7 +32,7 @@ You can deploy this app on a Python cloud host such as Azure App Service or Rend
 1. Push the project to a GitHub repository.
 2. Create a Linux Web App with Python 3.14.
 3. In App Service settings, set the Startup Command to:
-   `python app.py`
+   `python backend/app.py`
 4. App Service will install `backend/requirements.txt` and use the Flask app as the API server.
 5. Open `https://<your-app-name>.azurewebsites.net/index.html` to access the frontend.
 
@@ -45,6 +45,8 @@ You can deploy this app on a Python cloud host such as Azure App Service or Rend
 4. Visit `/index.html` on the deployed domain to load the frontend.
 
 This project now serves the UI from the Flask app static folder and works from the same origin for API calls.
+
+📖 **Detailed Hosting Guide**: See [HOSTING_GUIDE.md](HOSTING_GUIDE.md) for comprehensive step-by-step instructions.
 
 ## API Endpoints
 - `GET /api/flights/`
