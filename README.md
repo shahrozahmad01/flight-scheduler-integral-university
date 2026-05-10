@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Aircraft Network Flight Scheduler
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue)
@@ -72,3 +73,6 @@ Placeholder for dashboard and disruption pages.
 - Md Shakib Hussain (2400103975)
 - Guide: Mrs. Fareen, Assistant Professor
 - Integral University, Lucknow — MCA 2025-26
+=======
+# flight-scheduler-integral-university
+>>>>>>> 0a1382e51ee52cfccf36d1cca5af5f8240b70bd8
