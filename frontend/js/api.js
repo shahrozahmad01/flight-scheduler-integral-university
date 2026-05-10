@@ -1,4 +1,5 @@
-const BASE_URL = 'https://your-render-backend-url.onrender.com/api';
+// Change this URL to your Render backend URL after deployment
+const BASE_URL = 'https://flight-scheduler-backend.onrender.com/api';
 
 async function apiFetch(path, options = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {

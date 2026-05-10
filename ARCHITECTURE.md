@@ -82,7 +82,7 @@ The Aircraft Network Flight Scheduler is a comprehensive web application designe
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Runtime:** Python 3.14
+- **Runtime:** Python 3.11
 - **Framework:** Flask 2.3.3
 - **ORM:** SQLAlchemy 2.0.49
 - **Database:** PostgreSQL (Supabase)
@@ -147,14 +147,23 @@ backend/
 ### Frontend Structure
 ```
 frontend/
-├── index.html          # Main dashboard page
+├── index.html              # Login / Entry page
 ├── css/
-│   ├── main.css        # Global styles
-│   └── components.css  # Component styles
+│   ├── main.css            # Global styles, sidebar, navbar
+│   └── components.css      # Cards, badges, modals, animations
 ├── js/
-│   └── api.js          # API client functions
+│   ├── api.js              # Centralized API client (all fetch calls)
+│   ├── dashboard.js        # Dashboard stats and disruption table
+│   ├── flights.js          # Flight grid, filter, detail modal
+│   ├── passengers.js       # Passenger list and booking view
+│   ├── disruptions.js      # Disruption trigger and impact analysis
+│   └── rebooking.js        # 3-step rebooking wizard
 └── pages/
-    └── dashboard.html  # Dashboard page
+    ├── dashboard.html      # Main operations dashboard
+    ├── flights.html        # Flight schedule management
+    ├── passengers.html     # Passenger management
+    ├── disruptions.html    # Disruption handling
+    └── rebooking.html      # Rebooking operations
 ```
 
 ---
@@ -166,38 +175,53 @@ frontend/
 #### Flights Table
 ```sql
 CREATE TABLE flights (
-    id INTEGER PRIMARY KEY,
-    flight_number VARCHAR(10) NOT NULL,
-    origin VARCHAR(100) NOT NULL,
-    destination VARCHAR(100) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    flight_number VARCHAR(10) UNIQUE NOT NULL,
+    origin VARCHAR(3) NOT NULL,
+    destination VARCHAR(3) NOT NULL,
     departure_time DATETIME NOT NULL,
     arrival_time DATETIME NOT NULL,
-    capacity INTEGER NOT NULL,
-    status VARCHAR(20) DEFAULT 'scheduled'
+    total_seats INTEGER DEFAULT 180,
+    available_seats INTEGER DEFAULT 180,
+    status VARCHAR(20) DEFAULT 'ON_TIME',
+    delay_minutes INTEGER DEFAULT 0,
+    aircraft_type VARCHAR(20) DEFAULT 'Boeing 737'
 );
 ```
 
 #### Passengers Table
 ```sql
 CREATE TABLE passengers (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pnr VARCHAR(6) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20),
-    priority_level INTEGER DEFAULT 1
+    email VARCHAR(150) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    tier VARCHAR(20) DEFAULT 'ECONOMY',
+    frequent_flyer BOOLEAN DEFAULT FALSE,
+    special_needs BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 #### Bookings Table
 ```sql
 CREATE TABLE bookings (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    booking_ref VARCHAR(8) UNIQUE NOT NULL,
     passenger_id INTEGER NOT NULL,
     flight_id INTEGER NOT NULL,
-    seat_number VARCHAR(10),
-    booking_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'confirmed',
+    seat_number VARCHAR(5),
+    seat_class VARCHAR(20) DEFAULT 'ECONOMY',
+    status VARCHAR(20) DEFAULT 'CONFIRMED',
+    original_flight_id INTEGER,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    check_in BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id),
+    FOREIGN KEY (flight_id) REFERENCES flights(id),
+    FOREIGN KEY (original_flight_id) REFERENCES flights(id)
+);
+```
     FOREIGN KEY (flight_id) REFERENCES flights(id)
 );
 ```
@@ -205,12 +229,14 @@ CREATE TABLE bookings (
 #### Disruptions Table
 ```sql
 CREATE TABLE disruptions (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     flight_id INTEGER NOT NULL,
-    disruption_type VARCHAR(50) NOT NULL,
-    description TEXT,
-    reported_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'active',
+    disruption_type VARCHAR(20) NOT NULL,
+    reason VARCHAR(200) NOT NULL,
+    reported_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    resolved BOOLEAN DEFAULT FALSE,
+    passengers_affected INTEGER DEFAULT 0,
+    passengers_rebooked INTEGER DEFAULT 0,
     FOREIGN KEY (flight_id) REFERENCES flights(id)
 );
 ```
@@ -434,7 +460,7 @@ FLASK_ENV=production
 ## 🚀 Development Setup
 
 ### Prerequisites
-- Python 3.14+
+- Python 3.11+
 - pip (Python package manager)
 - Git
 - Web browser

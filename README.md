@@ -26,27 +26,18 @@ The app helps operations teams handle cancellations and delays, prioritize passe
 5. Open `http://localhost:5000/index.html` in your browser
 
 ## Cloud Hosting
-The application is designed for a modern cloud architecture:
-
-- **Frontend**: Hosted on Vercel (static site)
-- **Backend**: Hosted on Render (Flask API)
-- **Database**: Hosted on Supabase (PostgreSQL)
-
-### Quick Setup:
-1. **Database**: Create Supabase project and get connection string
-2. **Backend**: Deploy to Render with `DATABASE_URL` env var
-3. **Frontend**: Deploy to Vercel, update API base URL to Render backend
-
-📖 **Detailed Hosting Guide**: See [HOSTING_GUIDE.md](HOSTING_GUIDE.md) for comprehensive step-by-step instructions.
+- **Frontend**: Vercel | **Backend**: Render | **Database**: Supabase
+- 📖 See [HOSTING_GUIDE.md](HOSTING_GUIDE.md) for full deployment steps.
 
 ## API Endpoints
-- `GET /api/flights/`
-- `POST /api/flights/`
-- `GET /api/passengers/`
-- `POST /api/bookings/`
-- `POST /api/disruptions/trigger`
-- `GET /api/rebook/options/<passenger_id>/<flight_id>`
-- `POST /api/rebook/confirm`
+- `GET /api/flights/` - List all flights
+- `POST /api/flights/` - Create new flight
+- `GET /api/passengers/` - List all passengers
+- `POST /api/bookings/` - Create new booking
+- `POST /api/disruptions/trigger` - Trigger disruption handling
+- `GET /api/rebook/options/<passenger_id>/<flight_id>` - Get rebooking options
+
+📖 See [ARCHITECTURE.md](ARCHITECTURE.md) for complete API reference.
 
 ## Modules
 - `flights`
@@ -66,6 +57,3 @@ Placeholder for dashboard and disruption pages.
 - Md Shakib Hussain (2400103975)
 - Guide: Mrs. Fareen, Assistant Professor
 - Integral University, Lucknow — MCA 2025-26
-=======
-# flight-scheduler-integral-university
->>>>>>> 0a1382e51ee52cfccf36d1cca5af5f8240b70bd8
