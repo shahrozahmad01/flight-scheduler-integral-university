@@ -20,11 +20,15 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    _db_url = os.environ.get('DATABASE_URL', '')
+    _db_url = os.environ.get('DATABASE_URL')
     # Fix: Supabase gives 'postgres://' but SQLAlchemy needs 'postgresql://'
-    if _db_url.startswith('postgres://'):
-        _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
-    SQLALCHEMY_DATABASE_URI = _db_url
+    if _db_url:
+        if _db_url.startswith('postgres://'):
+            _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
+        SQLALCHEMY_DATABASE_URI = _db_url
+    else:
+        # Fallback to a local SQLite DB in case DATABASE_URL is not provided
+        SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///flight_scheduler.db')
 
 config_map = {
     'development': DevelopmentConfig,
