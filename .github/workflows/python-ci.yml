@@ -9,6 +9,33 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt
+      - name: Import check
+        run: |
+          python -c "import importlib; importlib.import_module('backend.app'); print('import OK')"
+      - name: Run smoke test (import-only)
+        run: |
+          python -c "from importlib import import_module; import_module('backend.routes.flights'); print('routes import OK')"
+name: Python CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
