@@ -11,10 +11,11 @@ try {
     exit 1
 }
 
-$venvPath = Join-Path $PSScriptRoot '..' '.venv'
+$parentPath = (Resolve-Path -Path (Join-Path $PSScriptRoot '..')).Path
+$venvPath = Join-Path $parentPath '.venv'
 Write-Host "Creating venv at: $venvPath"
 
-& $PythonExe -m venv $venvPath
+& $PythonExe -m venv "$venvPath"
 
 $venvPython = Join-Path $venvPath 'Scripts\python.exe'
 if (!(Test-Path $venvPython)) {
@@ -25,7 +26,7 @@ if (!(Test-Path $venvPython)) {
 Write-Host "Upgrading pip in venv..."
 & $venvPython -m pip install --upgrade pip
 
-Write-Host "Installing requirements..."
-& $venvPython -m pip install -r (Join-Path $PSScriptRoot '..\requirements.txt')
+Write-Host "Installing requirements from backend/requirements.txt..."
+& $venvPython -m pip install -r (Join-Path $PSScriptRoot 'requirements.txt')
 
-Write-Host "Virtual environment created and dependencies installed. Activate with:`n .\.venv\Scripts\Activate.ps1`"
+Write-Host "Virtual environment created and dependencies installed. Activate with:`n .\.venv\Scripts\Activate.ps1"
