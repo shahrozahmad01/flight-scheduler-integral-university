@@ -221,10 +221,6 @@ CREATE TABLE bookings (
     FOREIGN KEY (flight_id) REFERENCES flights(id),
     FOREIGN KEY (original_flight_id) REFERENCES flights(id)
 );
-```
-    FOREIGN KEY (flight_id) REFERENCES flights(id)
-);
-```
 
 #### Disruptions Table
 ```sql
