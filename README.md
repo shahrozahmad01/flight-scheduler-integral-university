@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 # Aircraft Network Flight Scheduler
 
-![Python](https://img.shields.io/badge/Python-3.14-blue)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-orange)
 ![HTML5](https://img.shields.io/badge/HTML5-%23E34F26-orange)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
@@ -14,7 +13,7 @@ The app helps operations teams handle cancellations and delays, prioritize passe
 
 ## Tech Stack
 - Frontend: HTML5, CSS3, Vanilla JavaScript
-- Backend: Python 3.14, Flask 2.3, SQLAlchemy
+- Backend: Python 3.11, Flask 2.3, SQLAlchemy
 - Database: SQLite (development)
 - Optional: Java scoring module
 

@@ -3,7 +3,7 @@
 ## Overview
 This guide provides step-by-step instructions to host the Aircraft Network Flight Scheduler application on cloud platforms. The application consists of:
 - **Frontend**: Static HTML/CSS/JS hosted on Vercel
-- **Backend**: Flask API (Python 3.14) hosted on Render
+- **Backend**: Flask API (Python 3.11) hosted on Render
 - **Database**: PostgreSQL hosted on Supabase
 
 ## Prerequisites
