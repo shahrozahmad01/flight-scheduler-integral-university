@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import IntegrityError
 from database import db
 from models.flight import Flight
 
@@ -44,6 +45,10 @@ def create_flight():
     if not all(key in data for key in required):
         return jsonify({'error': 'Missing required flight fields'}), 400
 
+    # If a flight with same flight_number already exists, return 409
+    if Flight.get_by_flight_number(data.get('flight_number')):
+        return jsonify({'error': 'Flight with this flight_number already exists'}), 409
+
     try:
         departure_time = parse_datetime(data['departure_time'])
         arrival_time = parse_datetime(data['arrival_time'])
@@ -63,7 +68,11 @@ def create_flight():
         aircraft_type=data.get('aircraft_type', 'Boeing 737'),
     )
     db.session.add(flight)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({'error': 'Flight with this flight_number already exists'}), 409
     return jsonify(flight.to_dict()), 201
 
 

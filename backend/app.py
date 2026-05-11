@@ -56,6 +56,7 @@ def create_app():
 
     @app.errorhandler(500)
     def server_error(e):
+        app.logger.exception('Unhandled exception:')
         return jsonify({'error': 'Internal server error'}), 500
 
     return app
@@ -63,4 +64,5 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=app.config.get('DEBUG', False))
+    # Disable the reloader here to avoid repeated restarts (OneDrive file watches)
+    app.run(host='0.0.0.0', port=port, debug=app.config.get('DEBUG', False), use_reloader=False)
