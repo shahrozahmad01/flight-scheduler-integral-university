@@ -6,7 +6,6 @@ from database import db
 from models.flight import Flight
 from models.passenger import Passenger
 from models.booking import Booking
-from models.disruption import Disruption
 
 
 def seed():
@@ -114,26 +113,5 @@ def seed():
             flight.available_seats = max(0, flight.available_seats - 1)
             db.session.add(booking)
 
-        disruption1 = Disruption(
-            flight_id=flights[3].id,
-            disruption_type='CANCELLATION',
-            reason='Engine maintenance required',
-            passengers_affected=Booking.query.filter_by(flight_id=flights[3].id, status='CONFIRMED').count(),
-            resolved=False,
-        )
-        disruption2 = Disruption(
-            flight_id=flights[2].id,
-            disruption_type='DELAY',
-            reason='Technical issue',
-            passengers_affected=Booking.query.filter_by(flight_id=flights[2].id, status='CONFIRMED').count(),
-            resolved=False,
-        )
-        db.session.add(disruption1)
-        db.session.add(disruption2)
-
         db.session.commit()
         print('Database seeded successfully!')
-
-
-if __name__ == '__main__':
-    seed()

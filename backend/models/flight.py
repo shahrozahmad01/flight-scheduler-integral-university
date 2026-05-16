@@ -18,7 +18,6 @@ class Flight(db.Model):
     aircraft_type = db.Column(db.String(20), default='Boeing 737')
 
     bookings = db.relationship('Booking', backref='flight', lazy=True)
-    disruptions = db.relationship('Disruption', backref='flight', lazy=True)
 
     def to_dict(self):
         return {

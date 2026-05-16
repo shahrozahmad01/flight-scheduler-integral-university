@@ -3,43 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | Aircraft Network Flight Scheduler</title>
+  <title>Dashboard | Flight Scheduler</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/components.css">
 </head>
 <body>
   <div class="sidebar">
-    <h2 style="margin-bottom:24px;">Aircraft Network</h2>
+    <h2 style="margin-bottom:24px;">Flight Scheduler</h2>
     <nav>
       <a class="active" href="dashboard.html">🏠 Dashboard</a>
       <a href="flights.html">✈️ Flights</a>
       <a href="#">👤 Passengers</a>
-      <a href="#">⚠️ Disruptions</a>
-      <a href="#">🔄 Rebooking</a>
-      <a href="#">🔔 Notifications</a>
-      <a href="cloud-hosting.html">☁️ Cloud Hosting</a>
       <button id="logoutBtn" class="btn btn-danger" style="margin-top:16px; width:100%;">Logout</button>
     </nav>
   </div>
   <main class="main-content">
     <div class="card">
       <div class="card-header">Operations Dashboard</div>
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
-        <div class="stat-box"><div class="number" id="totalFlights">0</div><div class="label">Total Flights Today</div></div>
-        <div class="stat-box"><div class="number" id="activeDisruptions">0</div><div class="label">Disruptions Active</div></div>
-        <div class="stat-box"><div class="number" id="affectedPassengers">0</div><div class="label">Passengers Affected</div></div>
-        <div class="stat-box"><div class="number" id="rebookingsDone">0</div><div class="label">Rebookings Done</div></div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+        <div class="stat-box"><div class="number" id="totalFlights">0</div><div class="label">Total Flights</div></div>
+        <div class="stat-box"><div class="number" id="totalPassengers">0</div><div class="label">Total Passengers</div></div>
+        <div class="stat-box"><div class="number" id="totalBookings">0</div><div class="label">Total Bookings</div></div>
+        <div class="stat-box"><div class="number" id="onTimeFlights">0</div><div class="label">On-Time Flights</div></div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Active Disruptions</div>
-      <div id="disruptionSection">Loading disruptions...</div>
     </div>
 
     <div class="card">
       <div class="card-header">Recent Flights</div>
       <div id="flightsTable">Loading flights...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Recent Bookings</div>
+      <div id="bookingsTable">Loading bookings...</div>
     </div>
   </main>
 
@@ -56,35 +52,41 @@
 
     async function loadDashboard() {
       try {
-        const stats = await API.getFlightStats();
-        document.getElementById('totalFlights').textContent = stats.total_flights || 0;
-        document.getElementById('activeDisruptions').textContent = stats.delayed_count + stats.cancelled_count || 0;
-        document.getElementById('affectedPassengers').textContent = 0;
-        document.getElementById('rebookingsDone').textContent = 0;
-
-        const disruptions = await API.getDisruptions();
-        const active = disruptions.filter(d => !d.resolved);
-        document.getElementById('disruptionSection').innerHTML = active.length ? active.map(d => `
-          <div style="padding:14px 0; border-bottom:1px solid #e5e7eb;">
-            <strong>${d.flight_number}</strong> • ${d.disruption_type} • ${d.reason}
-            <div style="margin-top:8px;"><span class="badge-${d.disruption_type === 'CANCELLATION' ? 'cancelled' : 'delayed'}">${d.disruption_type}</span></div>
-          </div>
-        `).join('') : '<div class="empty-state">No active disruptions right now.</div>';
-
         const flights = await API.getFlights();
-        const tableRows = flights.slice(0, 10).map(f => `
+        const passengers = await API.getPassengers();
+        const bookings = await API.getBookings();
+
+        // Update statistics
+        document.getElementById('totalFlights').textContent = flights.length;
+        document.getElementById('totalPassengers').textContent = passengers.length;
+        document.getElementById('totalBookings').textContent = bookings.length;
+        document.getElementById('onTimeFlights').textContent = flights.filter(f => f.status === 'ON_TIME').length;
+
+        // Display recent flights
+        const flightRows = flights.slice(0, 10).map(f => `
           <tr>
-            <td>${f.flight_number}</td>
+            <td><strong>${f.flight_number}</strong></td>
             <td>${f.origin} → ${f.destination}</td>
             <td>${new Date(f.departure_time).toLocaleString()}</td>
-            <td>${new Date(f.arrival_time).toLocaleString()}</td>
             <td>${f.available_seats}/${f.total_seats}</td>
             <td><span class="badge-${f.status === 'ON_TIME' ? 'ontime' : f.status === 'DELAYED' ? 'delayed' : 'cancelled'}">${f.status}</span></td>
           </tr>
         `).join('');
-        document.getElementById('flightsTable').innerHTML = `<table><thead><tr><th>Flight</th><th>Route</th><th>Departure</th><th>Arrival</th><th>Seats</th><th>Status</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+        document.getElementById('flightsTable').innerHTML = `<table><thead><tr><th>Flight</th><th>Route</th><th>Departure</th><th>Seats</th><th>Status</th></tr></thead><tbody>${flightRows || '<tr><td colspan="5" style="text-align:center;">No flights found</td></tr>'}</tbody></table>`;
+
+        // Display recent bookings
+        const bookingRows = bookings.slice(0, 10).map(b => `
+          <tr>
+            <td><strong>${b.booking_ref}</strong></td>
+            <td>${b.passenger_id}</td>
+            <td>${b.seat_number}</td>
+            <td>${b.seat_class}</td>
+            <td><span class="badge-ontime">${b.status}</span></td>
+          </tr>
+        `).join('');
+        document.getElementById('bookingsTable').innerHTML = `<table><thead><tr><th>Booking Ref</th><th>Passenger</th><th>Seat</th><th>Class</th><th>Status</th></tr></thead><tbody>${bookingRows || '<tr><td colspan="5" style="text-align:center;">No bookings found</td></tr>'}</tbody></table>`;
       } catch (error) {
-        console.error(error);
+        console.error('Dashboard error:', error);
         showError('Unable to load dashboard data');
       }
     }
